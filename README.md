@@ -70,9 +70,9 @@ We now have all the details as shown below to connect to the remote Windows host
 
 <img src="./images/distinguished_name.png"/><p>
 
-Let us configure Microsoft Remote Desktop client with the details provided from the Boundary Desktop output to connect to the remote target.<p>
+Let's configure Microsoft Remote Desktop client with the details provided from the Boundary Desktop output to connect to the remote target.<p>
 <img src="./images/connect.gif"/><p>
 
-Once logged in to the Windows machine, you can open the command prompt and run whoami to confirm that the logged-in user is indeed the dynamically generated user account.<p>
+Once logged in to the Windows machine, you can open the command prompt and run the `whoami` command to confirm that the logged-in user is indeed the dynamically generated user account.<p>
 <img src="./images/whoami.png" width="60%"/><p>
 

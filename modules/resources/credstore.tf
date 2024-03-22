@@ -7,6 +7,7 @@ resource "vault_token" "boundary" {
   no_default_policy = true
   renewable         = true
   ttl               = "20m"
+  period            = "20m"
 
   metadata = {
     "purpose" = "boundary-service-account"
