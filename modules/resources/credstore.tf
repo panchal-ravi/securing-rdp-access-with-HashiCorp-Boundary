@@ -12,6 +12,7 @@ resource "vault_token" "boundary" {
   metadata = {
     "purpose" = "boundary-service-account"
   }
+  depends_on = [time_sleep.wait_for_egress_worker]
 }
 
 resource "boundary_credential_store_vault" "cred_store" {
