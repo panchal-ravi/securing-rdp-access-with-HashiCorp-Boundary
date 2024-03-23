@@ -47,13 +47,22 @@ vault_cluster_public_url
 vault_cluster_admin_token
 ```
 
-## Setup AWS Infrastructure and Boundary resources
+## Setup AWS Infrastructure, Boundary and Vault resources
 ```sh
 terraform apply -target module.resources
 ```
 This step should setup all required infrastructure resources including networking, security groups, EC2 instances, Boundary and Vault resources as per the below diagram.
 
 <img src="./images/deployed_architecture.png"/>
+
+The infrastructure is setup in AWS within a single region, featuring a single VPC and a single public and private subnet. The Windows domain controller and the target Windows machine are hosted in the private subnet.
+
+Boundary facilitates secure connections to private endpoints via self-managed Boundary workers. In our configuration, the Boundary worker is deployed in the same private subnet, acting as a TCP proxy to both the Windows target in the private subnet and HCP Vault's private endpoint. Additionally, VPC peering connection is established between HCP virtual network and AWS VPC to enable communication over the private network.
+
+AWS security groups are configured to enforce stringent access controls. Notably, no inbound connections are allowed into the private subnet. The self-managed worker is linked to the upstream HCP Boundary worker through a reverse-proxy connection. Deploying self-managed workers within a private network addresses the challenge faced by organizations that prohibit inbound network traffic into private networks. 
+
+The security group for the target Windows client machine within the private subnet is configured to allow inbound RDP/TCP access solely from the self-managed Boundary worker. This setup ensures that access to the Windows client machine is restricted to authorized connections originating from the Boundary worker.
+
 
 ## Test the workflow
 
