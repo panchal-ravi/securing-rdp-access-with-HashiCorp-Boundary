@@ -1,0 +1,10 @@
+.terraform/
+amis/
+terraform.tfstate*
+.terraform*
+.idea
+*.DS_Store
+*.tmp
+.envrc
+body.xml
+ssh_key
