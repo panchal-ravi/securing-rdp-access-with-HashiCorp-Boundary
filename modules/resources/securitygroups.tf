@@ -1,7 +1,3 @@
-data "http" "myip" {
-  url = "https://ipv4.icanhazip.com"
-}
-
 module "egress_worker_sg" {
   source      = "terraform-aws-modules/security-group/aws"
   name        = "${var.deployment_id}-egress-worker"
