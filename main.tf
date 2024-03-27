@@ -17,8 +17,8 @@ module "hcp" {
   hvn_id                  = local.hvn_id
   hcp_boundary_admin      = var.hcp_boundary_admin
   hcp_boundary_password   = var.hcp_boundary_password
-  boundary_tier           = var.boundary_tier
-  vault_tier              = var.vault_tier
+  hcp_boundary_tier           = var.boundary_tier
+  hcp_vault_tier              = var.vault_tier
   region                  = var.aws_region
 }
 

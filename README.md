@@ -10,8 +10,8 @@
 Once creds are created as per prerequisites, we need to make them available to Terraform as below.
 ```sh
 export <AWS_CREDS>
-export TF_VAR_hcp_client_id=<hcp_client_id>
-export TF_VAR_hcp_client_secret=<hcp_client_secret>
+export TF_VAR_hcp_client_id=<hcp_client_id>                 #The OAuth2 Client ID for API operations.
+export TF_VAR_hcp_client_secret=<hcp_client_secret>         #The OAuth2 Client Secret for API operations.
 export TF_VAR_hcp_boundary_admin=<hcp_boundary_username>    #The username of the initial admin user. This must be at least 3 characters in length, alphanumeric, hyphen, or period.
 export TF_VAR_hcp_boundary_password=<hcp_boundary_password> #The password of the initial admin user. This must be at least 8 characters in length.
 ```
@@ -52,36 +52,51 @@ vault_cluster_admin_token
 terraform apply -target module.resources
 ```
 This step should setup all required infrastructure resources including networking, security groups, EC2 instances, Boundary and Vault resources as per the below diagram.
+The infrastructure is setup in AWS within a single region, featuring a single VPC and a single public and private subnet. The Windows domain controller and the target Windows machine are hosted in the private subnet.
 
 <img src="./images/deployed_architecture.png"/>
 
-The infrastructure is setup in AWS within a single region, featuring a single VPC and a single public and private subnet. The Windows domain controller and the target Windows machine are hosted in the private subnet.
 
-Boundary facilitates secure connections to private endpoints via self-managed Boundary workers. In our configuration, the Boundary worker is deployed in the same private subnet, acting as a TCP proxy to both the Windows target in the private subnet and HCP Vault's private endpoint. Additionally, VPC peering connection is established between HCP virtual network and AWS VPC to enable communication over the private network.
+## Test the workflow as "support" user
 
-AWS security groups are configured to enforce stringent access controls. Notably, no inbound connections are allowed into the private subnet. The self-managed worker is linked to the upstream HCP Boundary worker through a reverse-proxy connection. Deploying self-managed workers within a private network addresses the challenge faced by organizations that prohibit inbound network traffic into private networks. 
+1.Login to Boundary Desktop Client as `support` user. The password for this user is available from the terraform output. The `support` user should have access to `windows_restricted` target only.
 
-The security group for the target Windows client machine within the private subnet is configured to allow inbound RDP/TCP access solely from the self-managed Boundary worker. This setup ensures that access to the Windows client machine is restricted to authorized connections originating from the Boundary worker.
+<img align="center" src="./images/login_support.gif" /><p>
 
+2.Click on the "Connect" button to retrieve time-bound, dynamic Active Directory (AD) credentials. Please note that the username part of the dynamic credentials starts with `v_restricted`, as per the Vault dynamic secret backend role configured for this target.
 
-## Test the workflow
-
-1.Login to Boundary Desktop Client using the HCP Boundary cluster URL and the admin credentials that were set up for creating the HCP Boundary cluster. 
-
-<img align="center" src="./images/boundary_login.gif" /><p>
-
-2.Click on the "Connect" button to retrieve time-bound, dynamic Active Directory (AD) credentials.
-
-<img src="./images/creds.gif"/><p>
+<img src="./images/creds_support.gif"/><p>
 
 3.Connect to the remote target.<p>
-We now have all the details as shown below to connect to the remote Windows host. Please note that the destination address is `127.0.0.1:3389`, as Boundary establishes a secure connection from the user's local machine to the Boundary worker. Additionally, the Windows domain name is set to default value of `hashidemo.com`. The domain name is also available as part of the distinguished_names field in dynamic credentials output as shown below.  
+Configure Microsoft Remote Desktop client to connect to `windows_restricted` target. All details including destination address, Windows domain name and user credentials are available from the Boundary Desktop.
 
-<img src="./images/distinguished_name.png"/><p>
-
-Let's configure Microsoft Remote Desktop client with the details provided from the Boundary Desktop output to connect to the remote target.<p>
-<img src="./images/connect.gif"/><p>
+<img src="./images/connect_support.gif"/><p>
 
 Once logged in to the Windows machine, you can open the command prompt and run the `whoami` command to confirm that the logged-in user is indeed the dynamically generated user account.<p>
-<img src="./images/whoami.png" width="60%"/><p>
+<img src="./images/whoami_support.png" width="60%"/><p>
 
+Let's also verify if the `support` user has access to the Control Panel. As expected, the dynamic AD credential presented to the `support` user does not allow access to the Windows Control Panel.<p>
+
+<img src="./images/control_panel_support.gif"/><p>
+
+## Test the workflow as "admin" user
+
+1.Login to Boundary Desktop Client as `admin` user using the HCP Boundary admin credentials configured for creating the HCP Boundary cluster.  As expected, the admin user should have access to both the Boundary targets.
+
+<img src="./images/login_admin.gif"/><p>
+
+2.Click on the "Connect" button to retrieve the time-bound, dynamic AD credentials for accessing the `windows_privileged` target. Please note that the username part of the dynamic credentials starts with `v_privileged`, as per the Vault dynamic secret backend role configured for this target.
+
+<img src="./images/creds_admin.gif"/><p>
+
+3.Connect to the remote target.<p>
+Configure Microsoft Remote Desktop client to connect to `windows_privileged` target.
+
+<img src="./images/connect_admin.gif"/><p>
+
+Once logged in to the Windows machine, run the `whoami` command to confirm that the logged-in user is using the dynamically generated privileged account credentials.<p>
+<img src="./images/whoami_admin.png" width="60%"/><p>
+
+Finally, let's verify that `admin` user has access to the Control Panel.
+
+<img src="./images/control_panel_admin.gif"/><p>

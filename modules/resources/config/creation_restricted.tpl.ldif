@@ -1,0 +1,23 @@
+dn: CN={{.Username}},CN=Users,DC=${domain_prefix},DC=${domain_suffix}
+changetype: add
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+userPrincipalName: {{.Username}}@${domain_prefix}.${domain_suffix}
+sAMAccountName: {{.Username}}
+
+dn: CN={{.Username}},CN=Users,DC=${domain_prefix},DC=${domain_suffix}
+changetype: modify
+replace: unicodePwd
+unicodePwd::{{ printf "%q" .Password | utf16le | base64 }}
+-
+replace: userAccountControl
+userAccountControl: 66048
+-
+
+dn: CN=${ad_group_name},CN=Users,DC=${domain_prefix},DC=${domain_suffix}
+changetype: modify
+add: member
+member: CN={{.Username}},CN=Users,DC=${domain_prefix},DC=${domain_suffix}
+-

@@ -1,7 +1,7 @@
 resource "hcp_vault_cluster" "this" {
   hvn_id     = hcp_hvn.this.hvn_id
   cluster_id = var.hcp_vault_cluster_id
-  tier       = "dev"
+  tier       = var.hcp_vault_tier
   public_endpoint = true
 }
 

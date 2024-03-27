@@ -8,3 +8,7 @@ output "vault_cluster_admin_token" {
   sensitive = true
   value     = module.hcp.vault_admin_token
 }
+output "boundary_user_password" {
+  sensitive = true
+  value     = module.resources.boundary_user_password
+}
