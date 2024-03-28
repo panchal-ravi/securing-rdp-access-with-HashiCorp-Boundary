@@ -18,13 +18,13 @@ variable "hcp_boundary_password" {
   description = "The password of the initial admin user. This must be at least 8 characters in length."
 }
 
-variable "boundary_tier" {
+variable "hcp_boundary_tier" {
   description = "The tier that the HCP Boundary cluster will be provisioned as, 'Standard' or 'Plus'."
   type        = string
   default     = "Plus"
 }
 
-variable "vault_tier" {
+variable "hcp_vault_tier" {
   description = "Tier of the HCP Vault cluster. Refer https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/resources/vault_cluster for valid values"
   type        = string
   default     = "dev"
