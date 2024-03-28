@@ -24,8 +24,8 @@ aws_vpc_cidr=<vpc_cidr>                     #e.g. "10.200.0.0/16"
 aws_public_subnets=<public_subnet_cidr>     #e.g. ["10.200.10.0/24"]
 aws_private_subnets=<private_subnet_cidr>   #e.g. ["10.200.20.0/24"]
 boundary_version=<boundary_version>         #e.g. "0.15.2+ent", this should match HCP Boundary Cluster version
-boundary_tier=<boundary_tier>               #e.g. "Plus" 
-vault_tier=<vault_tier>                     #e.g. "dev", Refer https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/resources/vault_cluster for valid values
+hcp_boundary_tier=<boundary_tier>           #e.g. "Plus" 
+hcp_vault_tier=<vault_tier>                 #e.g. "dev", Refer https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/resources/vault_cluster for valid values
 ```
 
 ## Clone this repo to your local machine
