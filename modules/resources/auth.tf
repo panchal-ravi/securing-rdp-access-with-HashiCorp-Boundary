@@ -22,10 +22,10 @@ resource "boundary_user" "support" {
 }
 
 resource "boundary_role" "default_org" {
-  name           = "default_org"
-  scope_id       = "global"
-  grant_scope_id = "global"
-  grant_strings = [
+  name            = "default_org"
+  scope_id        = "global"
+  grant_scope_ids = ["global"]
+  grant_strings   = [
     "ids=${boundary_scope.project.id};actions=read",
     "ids={{.User.Id}};actions=read",
     "ids=*;type=auth-token;actions=list,read:self,delete:self"
@@ -34,10 +34,10 @@ resource "boundary_role" "default_org" {
 }
 
 resource "boundary_role" "default_project" {
-  name           = "default_project"
-  scope_id       = boundary_scope.org.id
-  grant_scope_id = boundary_scope.project.id
-  grant_strings = [
+  name            = "default_project"
+  scope_id        = boundary_scope.org.id
+  grant_scope_ids = [boundary_scope.project.id]
+  grant_strings   = [
     "ids=*;type=session;actions=list,no-op",
     "ids=*;type=session;actions=read:self,cancel:self",
   ]
