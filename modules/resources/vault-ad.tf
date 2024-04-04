@@ -39,7 +39,7 @@ resource "vault_ldap_secret_backend_dynamic_role" "support" {
     domain_suffix = split(".", var.ad_domain)[1]
   })
   username_template = "v_{{.RoleName}}_{{random 5}}"
-  role_name         = local.vault_ldap_support_restricted
+  role_name         = local.vault_ldap_support_rolename
   default_ttl       = 600
   max_ttl           = 1200
 }

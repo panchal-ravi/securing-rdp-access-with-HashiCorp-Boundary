@@ -32,7 +32,7 @@ EOT
 resource "vault_policy" "ldap_creds" {
   name = "ldap-creds"
   policy = <<EOT
-path "ldap/creds/${local.vault_ldap_support_restricted}" {
+path "ldap/creds/${local.vault_ldap_support_rolename}" {
   capabilities = ["read"]
 }
 path "ldap/creds/${local.vault_ldap_privileged_rolename}" {

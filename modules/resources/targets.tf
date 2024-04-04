@@ -16,7 +16,7 @@ resource "boundary_credential_library_vault" "windows_restricted" {
   name                = "windows-dynamic-creds-restricted"
   description         = "Dynamic AD user creds for the support role"
   credential_store_id = boundary_credential_store_vault.cred_store.id
-  path                = "ldap/creds/${local.vault_ldap_support_restricted}"
+  path                = "ldap/creds/${local.vault_ldap_support_rolename}"
   http_method         = "GET"
   credential_type     = "username_password"
 }
